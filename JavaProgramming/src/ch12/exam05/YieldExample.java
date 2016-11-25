@@ -1,0 +1,23 @@
+package ch12.exam05;
+
+public class YieldExample {
+
+	public static void main(String[] args) {
+		ThreadA threadA = new ThreadA();
+		ThreadB threadB = new ThreadB();
+		
+		threadA.start();
+		threadB.start();
+		try { Thread.sleep(3000); } catch (InterruptedException e) {}
+		threadA.work = false;
+		
+		try { Thread.sleep(3000); } catch (InterruptedException e) {}
+		threadA.work = true;
+		
+		try { Thread.sleep(3000); } catch (InterruptedException e) {}
+		
+		threadA.stop = true;	//트루가 될때 스탑
+		threadB.stop = true;
+	}
+
+}

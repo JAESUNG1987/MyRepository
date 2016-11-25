@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+	<!-- 서블릿 등록 -->
+	<servlet>
+		<servlet-name>now</servlet-name>	<!-- now 는 식별자, servelet.NowServlet 이클래스를 now로 등록하겟다 -->
+		<servlet-class>servelet.NowServlet</servlet-class>
+		<init-param>
+			<param-name>location</param-name>		<!-- 변수이름이라 생각 -->
+			<param-value>부산</param-value>		<!-- 변수 값이라 생각 -->
+		</init-param>
+		<load-on-startup>1</load-on-startup>	<!-- 웹애플리케이션이 와스에 배치되자마자 객체를 만든다 --> <!-- 톰캣이 시작할때 객체를 만든다 -->
+	</servlet>
+
+	<!-- 서블릿 URL 매핑 -->	<!-- 매핑은 a와b를 연결시킨다. -->
+	<servlet-mapping>
+		<servlet-name>now</servlet-name>		<!-- 서블릿을 등록한 이름 -->
+		<url-pattern>/*</url-pattern>		<!-- GET  /now Servlet.JspProgramming/now  HTTP/1/1 는 요청HTTP 시작행-->
+	</servlet-mapping>
+</web-app>
