@@ -91,18 +91,18 @@ public class BoardNoticeDao {
 		);
 		return list;
 	}
-
-	public List<BoardNotice> search(String btitle , int pageNo, int rowsPerPage){
+	
+	public List<BoardNotice> selectByTitle(String btitle , int pageNo, int rowsPerPage){
 		String sql = "select rn, bno, btitle, bhitcount "; 
 		sql += "from ( ";
 		sql += "select rownum as rn, bno, btitle, bhitcount ";
-		sql += " from (select bno, btitle, bhitcount from board_Notice where btitle=? order by bno desc) ";
+		sql += " from (select bno, btitle, bhitcount from board_Notice where btitle like ? order by bno desc) ";
 		sql += "where rownum<=? ";
 		sql += ") ";
 		sql += "where rn>=? ";
 		List<BoardNotice> list = jdbcTemplate.query(
 			sql,
-			new Object[]{btitle, (pageNo*rowsPerPage), ((pageNo-1)*rowsPerPage + 1)},
+			new Object[]{("%"+btitle+"%"), (pageNo*rowsPerPage), ((pageNo-1)*rowsPerPage + 1)},
 			new RowMapper<BoardNotice>(){
 				@Override
 				public BoardNotice mapRow(ResultSet rs, int row) throws SQLException {
@@ -121,6 +121,14 @@ public class BoardNoticeDao {
 	public int count(){
 		String sql = "select count(*) from board_Notice";
 		int count = jdbcTemplate.queryForObject(sql, Integer.class);
+		return count;	
+	}
+	
+	public int countByTitle(String btitle){
+		String sql = "select count(*) from board_Notice where btitle=? ";
+		int count = (Integer)jdbcTemplate.queryForObject(
+				sql,
+				new Object[]{btitle}, Integer.class);
 		return count;	
 	}
 }

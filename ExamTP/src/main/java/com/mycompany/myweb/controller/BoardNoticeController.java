@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,53 +18,12 @@ import com.mycompany.myweb.service.BoardNoticeService;
 @Controller
 @RequestMapping("/boardnotice")
 public class BoardNoticeController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(BoardNoticeController.class);
 	@Autowired
 	private BoardNoticeService boardNoticeService;
 	
 	@RequestMapping("/list")
-	public String list(String pageNo, Model model, HttpSession session){
-		int intPageNo = 1;
-		if(pageNo == null){
-			pageNo = (String) session.getAttribute("pageNo");
-			if(pageNo != null){
-				intPageNo = Integer.parseInt(pageNo);
-			}
-		} else {
-			intPageNo = Integer.parseInt(pageNo);
-		}
-		session.setAttribute("pageNo", String.valueOf(intPageNo));
-		
-		int rowsPerPage = 10;
-		int pagesPerGroup = 5;
-		
-		int totalBoardNoticeNo = boardNoticeService.getcount();
-		
-		int totalPageNo = totalBoardNoticeNo/rowsPerPage +((totalBoardNoticeNo%rowsPerPage !=0) ?1:0);
-		int totalGroupNo = totalPageNo/pagesPerGroup + ((totalPageNo%pagesPerGroup !=0) ?1:0 );
-		
-		int groupNo = (intPageNo-1)/pagesPerGroup +1;
-		int startPageNo = (groupNo-1)*pagesPerGroup +1;
-		int endPageNo = startPageNo + pagesPerGroup -1;
-		if(groupNo == totalGroupNo) { endPageNo = totalPageNo; }
-		
-		List<BoardNotice> list = boardNoticeService.list(intPageNo, rowsPerPage);
-		
-		model.addAttribute("pageNo", intPageNo);
-		model.addAttribute("rowsPerPage", rowsPerPage);
-		model.addAttribute("pagesPerGroup", pagesPerGroup);
-		model.addAttribute("totalBoardNoticeNo", totalBoardNoticeNo);
-		model.addAttribute("totalPageNo", totalPageNo);
-		model.addAttribute("totalGroupNo", totalGroupNo);
-		model.addAttribute("groupNo", groupNo);
-		model.addAttribute("startPageNo", startPageNo);
-		model.addAttribute("endPageNo", endPageNo);
-		model.addAttribute("list", list);
-		return "boardnotice/list";
-	} 
-	
-	@RequestMapping("/search")
-	public String listsearch(String pageNo, Model model, HttpSession session, String btitle){
+	public String list(String pageNo, Model model, HttpSession session, String search){
 		int intPageNo = 1;
 		if(pageNo == null){
 			pageNo = (String) session.getAttribute("pageNo");
@@ -89,14 +50,14 @@ public class BoardNoticeController {
 		
 		List<BoardNotice> list; 
 		
-		if(btitle != null){
-			totalBoardNoticeNo= boardNoticeService.getcount();
-			list = boardNoticeService.listSearch(btitle, intPageNo, rowsPerPage);
+		if(search != null){
+			totalBoardNoticeNo= boardNoticeService.getcountByTitle(search);
+			list = boardNoticeService.listByTitle(search, intPageNo, rowsPerPage);
 		}else{
 			totalBoardNoticeNo = boardNoticeService.getcount();
 			list = boardNoticeService.list(intPageNo, rowsPerPage);
 		}
-		 
+		
 		model.addAttribute("pageNo", intPageNo);
 		model.addAttribute("rowsPerPage", rowsPerPage);
 		model.addAttribute("pagesPerGroup", pagesPerGroup);
@@ -107,9 +68,8 @@ public class BoardNoticeController {
 		model.addAttribute("startPageNo", startPageNo);
 		model.addAttribute("endPageNo", endPageNo);
 		model.addAttribute("list", list);
-
-		return "boardnotice/search";
-	}
+		return "boardnotice/list";
+	} 
 	
 	
 	@RequestMapping(value="/write", method=RequestMethod.GET)

@@ -27,8 +27,8 @@ public class BoardNoticeService {
 		return boardNoticeDao.selectByPage(pageNo, rowsPerPage);
 	}
 	
-	public List<BoardNotice> listSearch(String btitle , int pageNo, int rowsPerPage){
-		return boardNoticeDao.search(btitle, pageNo, rowsPerPage);
+	public List<BoardNotice> listByTitle(String btitle , int pageNo, int rowsPerPage){
+		return boardNoticeDao.selectByTitle(btitle, pageNo, rowsPerPage);
 	}
 	
 	public int write(BoardNotice boardNotice){
@@ -55,5 +55,8 @@ public class BoardNoticeService {
 	
 	public int getcount(){
 		return boardNoticeDao.count();
+	}
+	public int getcountByTitle(String btitle){
+		return boardNoticeDao.countByTitle(btitle);
 	}
 }
